@@ -8,12 +8,12 @@
   </q-page>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useIpStore } from 'src/stores/ipStore'
 
-<style lang="sass" scoped>
-.my-card
-  width: 90%
-  max-width: 800px
-  margin:20px
-  min-height: 300px
-</style>
+const ipStore = useIpStore()
+
+console.log('ipStore: ', ipStore)
+</script>
+
+<style lang="sass" scoped></style>

@@ -12,6 +12,7 @@ export default defineConfig((/* ctx */) => {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
+      'pinia'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
@@ -99,6 +100,7 @@ export default defineConfig((/* ctx */) => {
       // Quasar plugins
       plugins: [
         // Agrega Autoprefixer
+        'Notify'
       ]
     },
 

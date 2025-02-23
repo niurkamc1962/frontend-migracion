@@ -5,7 +5,11 @@
         <q-card-section>
           <div class="items-center row no-wrap">
             <div class="col">
-              <div class="text-h6">Herramienta para la exportacion de SqlServer hacia MariaDB</div>
+              <div class="text-h6">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam at aperiam, eligendi
+                illum eveniet sapiente optio id, voluptates officiis assumenda, vero accusamus
+                deleniti eum odio maiores vel cumque ratione ullam.
+              </div>
             </div>
           </div>
         </q-card-section>
@@ -16,28 +20,16 @@
           </div>
         </q-card-section>
         <q-form @submit.prevent="enviarIPServer">
+          <div class="col"></div>
+          <div class="col"></div>
           <q-input
             name="ip"
             placeholder="xxx.xxx.xxx.xxx"
             v-model="ip_server"
             label="Host"
             :rules="[(val) => !!val || 'La IP es requerida']"
+            class="q-mb-md"
           />
-          <!-- <q-input name="puerto" placeholder="xxxx" v-model="port_server" label="Puerto" />
-          <q-input
-            name="database"
-            placeholder="Nombre de la base de datos"
-            v-model="database_server"
-            label="Base de datos"
-          />
-          <q-input name="user" placeholder="Usuario" v-model="user_server" label="Usuario" />
-          <q-input
-            name="password"
-            type="password"
-            placeholder="Contraseña"
-            v-model="password_server"
-            label="Contraseña"
-          /> -->
           <!-- Agrega un botón de submit -->
           <q-btn type="submit" color="primary">Enviar</q-btn>
         </q-form>
@@ -51,12 +43,11 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router' // para redireccionar
 import { useQuasar } from 'quasar' // para mostrar notificacion
+import { useIpStore } from 'src/stores/ipStore' // importando el store
 
 const ip_server = ref('')
-// const port_server = ref('')
-// const database_server = ref('')
-// const user_server = ref('')
-// const password_server = ref('')
+const ipStore = useIpStore()
+
 const router = useRouter()
 const $q = useQuasar()
 
@@ -64,26 +55,29 @@ async function enviarIPServer() {
   try {
     const params = {
       host: ip_server.value,
-      // port: parseInt(port_server.value), // Convierte a entero
-      // database: database_server.value, // Agrega la variable de la base de datos
-      // user: user_server.value,
-      // password: password_server.value,
     }
-    const respuesta = await axios.post('/conectar-params', params)
-    console.log(respuesta.data)
 
+    const url_api = `${process.env.VUE_APP_API_BASE_URL}`
+    console.log(`${url_api}/conectar-params`)
+
+    const respuesta = await axios.post(
+      `${process.env.VUE_APP_API_BASE_URL}/conectar-params`,
+      params,
+    )
+    console.log('respuesta: ', respuesta)
     // Verificando si la conexion fue exitosa
     if (respuesta.data.status === 'success') {
+      // almacena la IP en el estado global
+      ipStore.setIpServer(ip_server.value)
       // redirige a ModulosPage.vue
-      await router.push({ name: 'ModulosPage' })
+      await router.push({ name: 'modulos' })
       // Muestra notificación positiva si se conectó correctamente
       $q.notify({
         color: 'positive',
         message: 'Conexión exitosa.',
       })
     } else if (respuesta.data.status === 'error') {
-      // Maneja cualquier otro status que indique un error
-
+      // Mensaje error
       $q.notify({
         color: 'negative',
         message: respuesta.data.message || 'Ocurrió un error al conectar.',
@@ -99,8 +93,8 @@ async function enviarIPServer() {
   } catch (error) {
     console.error(error)
 
-    // Muestra un diálogo de error si ocurre una excepción
-    $q.dialog({
+    // Muestra un mensaje de error si ocurre una excepción
+    $q.notify({
       message: 'Ocurrió un error al intentar conectar con el servidor.',
       color: 'negative',
     })
@@ -112,6 +106,7 @@ async function enviarIPServer() {
 .my-card
   width: 90%
   max-width: 800px
-  margin:20px
+  margin:40px auto  // aumenta el margen superior e inferior y centra horizontal
   min-height: 300px
+  padding: 20px  // Anade pagging interno para mas espacio
 </style>
