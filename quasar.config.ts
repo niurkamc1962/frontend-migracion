@@ -100,7 +100,8 @@ export default defineConfig((/* ctx */) => {
       // Quasar plugins
       plugins: [
         // Agrega Autoprefixer
-        'Notify'
+        'Notify',
+        'Loading'
       ]
     },
 

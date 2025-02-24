@@ -8,7 +8,7 @@ export const useIPStore = defineStore('ip', {
     actions: {
         setIpServer(ip: string) {
             this.ip_server = ip
-            localStorage.setItem('ip_servre', ip)
+            localStorage.setItem('ip_server', ip)
         },
         setSelectedOption(option: string | null) {
             this.selectedOption = option
@@ -18,6 +18,13 @@ export const useIPStore = defineStore('ip', {
 
                 localStorage.setItem('selectedOption', option)
             }
+        },
+        resetIpServer() {
+            this.ip_server = '';
+            this.selectedOption = null;
+            localStorage.removeItem('ip_server');
+            localStorage.removeItem('selectedOption');
+
         }
     }
 })

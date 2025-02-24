@@ -17,7 +17,7 @@
                 style="width: 250px"
                 color="primary"
                 class="text-white"
-                @input="handleOptionChange"
+                @update:model-value="handleOptionChange"
               />
             </div>
           </div>
@@ -67,7 +67,7 @@
     <q-footer reveal bordered class="text-white primary">
       <q-toolbar class="items-center justify-center row">
         <q-toolbar-title class="text-center">
-          Tecnomatica &copy; {{ currentYear }}
+          Tecnomática &copy; {{ currentYear }}
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -102,18 +102,22 @@ export default defineComponent({
       { label: 'Modulo 2', value: 'modulo2' },
       { label: 'Modulo 3', value: 'modulo3' },
       { label: 'Modulo 4', value: 'modulo4' },
+      { label: 'Salir', value: 'salir' },
     ])
 
     const enviarIPServer = async () => {
-      console.log('Entre en enviarIpServer')
-
+      // mostrando loading mientras se realiza la conexion con el servidor de BD
+      $q.loading.show({
+        message: 'Autenticando con el servidor de BD ...',
+      })
       try {
-        console.log('Entre en enviarIpServer TRY')
         const params = { host: ip_server.value }
         const url_api = `${process.env.VUE_APP_API_BASE_URL}/conectar-params`
         const respuesta = await axios.post(url_api, params)
 
-        console.log('respuesta: ', respuesta.data)
+        // Ocultando el loading antes de pasar al notify
+        $q.loading.hide()
+
         if (respuesta.data.status === 'success') {
           ipStore.setIpServer(ip_server.value)
           await router.push({ name: 'index' })
@@ -126,6 +130,7 @@ export default defineComponent({
         }
       } catch (error) {
         console.log(error)
+        $q.loading.hide()
         $q.notify({
           color: 'negative',
           message: 'Ocurrio error al intentar conectar con el servidor',
@@ -134,10 +139,22 @@ export default defineComponent({
     }
 
     // funcion para manejar la opcion seleccionada
-    const handleOptionChange = (value: string) => {
-      console.log('Opcion seleccionada: ', value)
-      //aqui agregar logica de datos a pasar a modulosPage.vue
-      menuVisible.value = false // cerrando el menu despues de seleccionar
+    const handleOptionChange = async (selectedOption: { label: string; value: string }) => {
+      console.log('Entre en handleOptionChange')
+      const value = selectedOption.value
+      console.log('value: ', value)
+      if (value === 'salir') {
+        console.log('Reseteadno IP ...')
+        ipStore.resetIpServer()
+        console.log('Redirigiendo a index ...')
+        await router.push({ name: 'index' })
+        console.log('Finalizado el proceso')
+      } else {
+        // Aquí iría la lógica para los módulos
+        console.log('Opcion seleccionada: ', value)
+      }
+      // Aquí agregar lógica de datos a pasar a modulosPage.vue
+      menuVisible.value = false // Cerrando el menú después de seleccionar
     }
 
     return {
