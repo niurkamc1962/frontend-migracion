@@ -9,9 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import { useIpStore } from 'src/stores/ipStore'
+import { useIPStore } from 'src/stores/ipStore'
 
-const ipStore = useIpStore()
+const ipStore = useIPStore()
 
 console.log('ipStore: ', ipStore)
 </script>
