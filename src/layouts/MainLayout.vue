@@ -14,9 +14,9 @@
                 v-model="ipStore.selectedOption"
                 :options="options"
                 label="Modulos"
+                label-color="white"
                 style="width: 250px"
                 color="primary"
-                class="text-white"
                 @update:model-value="handleOptionChange"
               />
             </div>
@@ -75,9 +75,9 @@
         </q-card>
       </div>
 
-      <div v-if="ipStore.selectedOption" class="text-he q-mt-md">
+      <!-- <div v-if="ipStore.selectedOption" class="text-h6 q-mt-md">
         Opcion seleccionada: {{ ipStore.selectedOption }}
-      </div>
+      </div> -->
       <router-view />
     </q-page-container>
 
@@ -117,11 +117,11 @@ export default defineComponent({
     }
 
     const options = computed(() => [
-      { label: 'Modulo 1', value: 'modulo1' },
-      { label: 'Modulo 2', value: 'modulo2' },
-      { label: 'Modulo 3', value: 'modulo3' },
-      { label: 'Modulo 4', value: 'modulo4' },
-      { label: 'Salir', value: 'salir' },
+      { label: 'Modulo Nomina', value: 'nomina', routeName: 'nomina' },
+      { label: 'Modulo 2', value: 'modulo2', routeName: 'modulo2' },
+      { label: 'Modulo 3', value: 'modulo3', routeName: 'modulo3' },
+      { label: 'Modulo 4', value: 'modulo4', routeName: 'modulo4' },
+      { label: 'Salir', value: 'salir', routeName: 'index' },
     ])
 
     const enviarIPServer = async () => {
@@ -143,7 +143,18 @@ export default defineComponent({
 
         if (respuesta.data.status === 'success') {
           ipStore.setIpServer(ip_server.value)
-          await router.push({ name: 'index' })
+          // Redireccionando segun la opcion seleccionada
+          if (ipStore.selectedOption) {
+            console.log('ipstore: ', ipStore)
+            const routeName = ipStore.selectedOption
+            if (routeName != 'index') {
+              await router.push({ name: routeName })
+            } else {
+              // si la opcion es salir entonces redirecciona a index
+              ipStore.resetIpServer()
+              await router.push({ name: 'index' })
+            }
+          }
           $q.notify({ color: 'positive', message: 'Conexion exitosa' })
         } else {
           $q.notify({
@@ -162,17 +173,19 @@ export default defineComponent({
     }
 
     // funcion para manejar la opcion seleccionada
-    const handleOptionChange = async (selectedOption: { label: string; value: string }) => {
-      console.log('Entre en handleOptionChange')
-      const value = selectedOption.value
-      if (value === 'salir') {
+    const handleOptionChange = async (selectedOption: {
+      label: string
+      value: string
+      routeName: string
+    }) => {
+      const routeName = selectedOption.routeName
+      if (routeName === 'index') {
         ipStore.resetIpServer()
-        await router.push({ name: 'index' })
+        await router.push({ name: routeName })
       } else {
-        // Aquí iría la lógica para los módulos
-        console.log('Opcion seleccionada: ', value)
+        // Redireccionando a la pagina del Modulo para el tratamiento a las Tablas
+        await router.push({ name: routeName })
       }
-      // Aquí agregar lógica de datos a pasar a modulosPage.vue
       menuVisible.value = false // Cerrando el menú después de seleccionar
     }
 

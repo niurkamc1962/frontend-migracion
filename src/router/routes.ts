@@ -12,6 +12,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/IndexPage.vue')
       },
       {
+        path: 'nomina',
+        name: 'nomina',
+        component: () => import('pages/NominaPage.vue')
+      },
+      {
         path: 'modulos',
         name: 'modulos',
         component: () => import('pages/ModulosPage.vue')

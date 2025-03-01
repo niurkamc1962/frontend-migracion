@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="ipStore.selectedOption" class="text-h6 q-mt-md">
-      IndexPage opcion seleccionada: {{ ipStore.selectedOption }}
+      NominaPage opcion seleccionada: {{ ipStore.selectedOption }}
     </div>
   </div>
 </template>
