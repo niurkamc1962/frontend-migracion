@@ -40,8 +40,8 @@
             </div>
           </q-card-section>
           <q-card-section class="items-center row no-wrap">
-            <div class="col-auto">
-              Especifique la IP del Servidor:
+            <div class="row q-gutter-md">
+              Especifique los datos del servidor:
               <q-form @submit.prevent="enviarIPServer">
                 <q-input
                   name="ip"
@@ -49,9 +49,26 @@
                   v-model="ip_server"
                   label="IP SQLServer"
                   :rules="[(val) => !!val || 'La ip es requerida']"
-                  class="q-md-md"
+                  class="col-4"
                 />
-                <q-btn type="submit" color="primary">Enviar</q-btn>
+                <q-input
+                  name="dbname"
+                  placeholder="Nombre de la base de datos"
+                  v-model="db_name"
+                  label="Nombre DB"
+                  :rules="[(val) => !!val || 'El nombre de la base de datos es requerido']"
+                  class="col-4"
+                />
+                <q-input
+                  name="password"
+                  placeholder="Contraseña"
+                  v-model="db_password"
+                  label="Contraseña"
+                  type="password"
+                  :rules="[(val) => !!val || 'La contraseña es requerida']"
+                  class="col-4"
+                />
+                <q-btn type="submit" color="primary" class="col-4">Enviar</q-btn>
               </q-form>
             </div>
           </q-card-section>
@@ -90,6 +107,8 @@ export default defineComponent({
     const router = useRouter()
 
     const ip_server = ref('')
+    const db_name = ref('')
+    const db_password = ref('')
     const selectedOption = ref<string | null>(null)
     const menuVisible = ref(false)
 
@@ -111,7 +130,11 @@ export default defineComponent({
         message: 'Autenticando con el servidor de BD ...',
       })
       try {
-        const params = { host: ip_server.value }
+        const params = {
+          host: ip_server.value,
+          database: db_name.value,
+          password: db_password.value,
+        }
         const url_api = `${process.env.VUE_APP_API_BASE_URL}/conectar-params`
         const respuesta = await axios.post(url_api, params)
 
@@ -142,13 +165,9 @@ export default defineComponent({
     const handleOptionChange = async (selectedOption: { label: string; value: string }) => {
       console.log('Entre en handleOptionChange')
       const value = selectedOption.value
-      console.log('value: ', value)
       if (value === 'salir') {
-        console.log('Reseteadno IP ...')
         ipStore.resetIpServer()
-        console.log('Redirigiendo a index ...')
         await router.push({ name: 'index' })
-        console.log('Finalizado el proceso')
       } else {
         // Aquí iría la lógica para los módulos
         console.log('Opcion seleccionada: ', value)
@@ -161,6 +180,8 @@ export default defineComponent({
       currentYear,
       ipStore,
       ip_server,
+      db_name,
+      db_password,
       toggleMenu,
       selectedOption,
       options,
