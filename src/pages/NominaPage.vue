@@ -24,28 +24,30 @@
 
     <!-- Diálogo para mostrar las relaciones -->
     <q-dialog v-model="mostrarDialogo">
-      <q-card v-if="relaciones.length > 0">
-        <q-card-section>
-          <div class="text-h6">Diagrama de Relaciones</div>
-        </q-card-section>
+      <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
+        <q-header class="bg-primary">
+          <q-toolbar>
+            <q-toolbar-title>Diagrama de Relaciones</q-toolbar-title>
+            <q-space />
+            <q-btn flat v-close-popup round dense icon="close" />
+          </q-toolbar>
+        </q-header>
 
-        <q-card-section>
-          <TableDiagram :relations="relaciones" />
-        </q-card-section>
+        <q-page-container>
+          <q-page class="q-pa-md">
+            <div v-if="relaciones.length > 0">
+              <TableDiagram :relations="relaciones" />
+            </div>
+            <div v-else>Sin relaciones para mostrar.</div>
+          </q-page>
+        </q-page-container>
 
-        <q-card-actions align="right">
-          <q-btn flat label="Cerrar" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-      <q-card v-else>
-        <q-card-section>
-          <div class="text-h6">Sin Relaciones</div>
-          <p>La tabla seleccionada no tiene relaciones.</p>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cerrar" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
+        <q-footer class="bg-grey-3">
+          <q-toolbar>
+            <q-toolbar-title>Pie de página</q-toolbar-title>
+          </q-toolbar>
+        </q-footer>
+      </q-layout>
     </q-dialog>
   </div>
 </template>
