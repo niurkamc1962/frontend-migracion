@@ -24,27 +24,24 @@
 
     <!-- Diálogo para mostrar las relaciones -->
     <q-dialog v-model="mostrarDialogo">
-      <q-card>
+      <q-card v-if="relaciones.length > 0">
         <q-card-section>
-          <div class="text-h6">Relaciones de la tabla</div>
+          <div class="text-h6">Diagrama de Relaciones</div>
         </q-card-section>
 
         <q-card-section>
-          <q-list bordered>
-            <q-item v-for="(relacion, index) in relaciones" :key="index">
-              <q-item-section>
-                <q-item-label
-                  >{{ relacion?.tabla_padre }} -> {{ relacion?.tabla_hija }}</q-item-label
-                >
-                <q-item-label caption>
-                  Columna padre: {{ relacion?.columna_padre }}, Columna hija:
-                  {{ relacion?.columna_hija }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
+          <TableDiagram :relations="relaciones" />
         </q-card-section>
 
+        <q-card-actions align="right">
+          <q-btn flat label="Cerrar" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+      <q-card v-else>
+        <q-card-section>
+          <div class="text-h6">Sin Relaciones</div>
+          <p>La tabla seleccionada no tiene relaciones.</p>
+        </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cerrar" color="primary" v-close-popup />
         </q-card-actions>
@@ -57,6 +54,7 @@
 import { ref } from 'vue'
 import axios, { type AxiosError } from 'axios' // <-- Importar tipo AxiosError
 import { useQuasar } from 'quasar'
+import TableDiagram from 'components/TableDiagram.vue' // Importando el componente
 
 // Para obtener los parametros de conexion que se almacenan en ipStore
 import { useIPStore } from 'src/stores/ipStore'
