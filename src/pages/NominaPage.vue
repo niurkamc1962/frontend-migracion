@@ -23,7 +23,7 @@
     </q-table>
 
     <!-- Diálogo para mostrar las relaciones -->
-    <q-dialog v-model="mostrarDialogo">
+    <q-dialog v-model="mostrarDialogo" :style="dialogStyles">
       <q-layout view="Lhh lpR fff" container class="bg-white text-dark">
         <q-header class="bg-primary">
           <q-toolbar>
@@ -36,7 +36,7 @@
         <q-page-container>
           <q-page class="q-pa-md">
             <div v-if="relaciones.length > 0">
-              <TableDiagram :relations="relaciones" />
+              <TreeDiagram :relations="relaciones" />
             </div>
             <div v-else>Sin relaciones para mostrar.</div>
           </q-page>
@@ -53,10 +53,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import axios, { type AxiosError } from 'axios' // <-- Importar tipo AxiosError
+import { ref, computed } from 'vue'
+import axios, { type AxiosError } from 'axios' // <-- Importar tipo_campo AxiosError
 import { useQuasar } from 'quasar'
-import TableDiagram from 'components/TableDiagram.vue' // Importando el componente
+import TreeDiagram from 'src/components/TreeDiagram.vue' // Importando el componente
 
 // Para obtener los parametros de conexion que se almacenan en ipStore
 import { useIPStore } from 'src/stores/ipStore'
@@ -77,6 +77,13 @@ interface Tabla {
   campos: Campo[]
 }
 
+// Definiendo interfaz para Campo
+interface Campo {
+  nombre_campo: string
+  tipo_campo: string
+  obligatorio: boolean
+}
+
 // Definiendo la interfaz para la Relacion entre las tablas
 interface Relacion {
   tabla_padre: string
@@ -91,64 +98,78 @@ const tablas: Tabla[] = [
     nombre: 'Trabajadores',
     tabla_sql: 'SCPTRABAJADORES',
     campos: [
-      { campo: 'CPTrabConsecutivoID', tipo: 'varchar', obligatorio: true },
-      { campo: 'CPTrabNombre', tipo: 'varchar', obligatorio: true },
-      { campo: 'CPTrabPriApellido', tipo: 'varchar', obligatorio: true },
-      { campo: 'CPTrabSegApellido', tipo: 'varchar', obligatorio: true },
-      { campo: 'TrabSexo', tipo: 'char', obligatorio: true },
-      { campo: 'CategId', tipo: 'int', obligatorio: false },
-      { campo: 'CargId', tipo: 'int', obligatorio: false },
-      { campo: 'TrabFechaAlta', tipo: 'datetime', obligatorio: true },
-      { campo: 'TrabFechaBaja', tipo: 'datetime', obligatorio: false },
-      { campo: 'TrabFormaCobro', tipo: 'char', obligatorio: false },
-      { campo: 'TrabTmagnMN', tipo: 'char', obligatorio: false },
-      { campo: 'TrabCorreo', tipo: 'varchar', obligatorio: false },
-      { campo: 'TrabCPVacaciones', tipo: 'smallint', obligatorio: false },
+      { nombre_campo: 'CPTrabConsecutivoID', tipo_campo: 'varchar', obligatorio: true },
+      { nombre_campo: 'CPTrabNombre', tipo_campo: 'varchar', obligatorio: true },
+      { nombre_campo: 'CPTrabPriApellido', tipo_campo: 'varchar', obligatorio: true },
+      { nombre_campo: 'CPTrabSegApellido', tipo_campo: 'varchar', obligatorio: true },
+      { nombre_campo: 'TrabSexo', tipo_campo: 'char', obligatorio: true },
+      { nombre_campo: 'CategId', tipo_campo: 'int', obligatorio: false },
+      { nombre_campo: 'CargId', tipo_campo: 'int', obligatorio: false },
+      { nombre_campo: 'TrabFechaAlta', tipo_campo: 'datetime', obligatorio: true },
+      { nombre_campo: 'TrabFechaBaja', tipo_campo: 'datetime', obligatorio: false },
+      { nombre_campo: 'TrabFormaCobro', tipo_campo: 'char', obligatorio: false },
+      { nombre_campo: 'TrabTmagnMN', tipo_campo: 'char', obligatorio: false },
+      { nombre_campo: 'TrabCorreo', tipo_campo: 'varchar', obligatorio: false },
+      { nombre_campo: 'TrabCPVacaciones', tipo_campo: 'smallint', obligatorio: false },
     ],
   },
   {
     nombre: 'Categorias Ocupacional',
     tabla_sql: 'SNOCATEGOCUP',
-    campos: [{ campo: 'CategODescripcion', tipo: 'varchar', obligatorio: true }],
+    campos: [{ nombre_campo: 'CategODescripcion', tipo_campo: 'varchar', obligatorio: true }],
   },
   {
     nombre: 'Cargos',
     tabla_sql: 'SNOCARGOS',
-    campos: [{ campo: 'CargDescripcion', tipo: 'varchar', obligatorio: true }],
+    campos: [{ nombre_campo: 'CargDescripcion', tipo_campo: 'varchar', obligatorio: true }],
   },
   {
-    nombre: 'Tipo Trabajador',
-    tabla_sql: 'SNOTIPOTRABAJADOR',
-    campos: [{ campo: 'TipTrabDescripcion', tipo: 'varchar', obligatorio: true }],
+    nombre: 'tipo_campo Trabajador',
+    tabla_sql: 'SNOtipo_campoTRABAJADOR',
+    campos: [{ nombre_campo: 'TipTrabDescripcion', tipo_campo: 'varchar', obligatorio: true }],
   },
   {
-    nombre: 'Tipo Retenciones',
+    nombre: 'tipo_campo Retenciones',
     tabla_sql: 'SCPCONRETPAGAR',
     campos: [
-      { campo: 'CPCRetDescripcion', tipo: 'varchar', obligatorio: true },
-      { campo: 'CRetDeudaCon', tipo: 'decimal', obligatorio: true },
-      { campo: 'ClcuIDCuenta', tipo: 'smallint', obligatorio: true },
-      { campo: 'CRetPPrioridad', tipo: 'smallint', obligatorio: true },
-      { campo: 'CRetPPenAlimenticia', tipo: 'smallint', obligatorio: false },
-      { campo: 'CRetPConPlazos', tipo: 'smallint', obligatorio: false },
+      { nombre_campo: 'CPCRetDescripcion', tipo_campo: 'varchar', obligatorio: true },
+      { nombre_campo: 'CRetDeudaCon', tipo_campo: 'decimal', obligatorio: true },
+      { nombre_campo: 'ClcuIDCuenta', tipo_campo: 'smallint', obligatorio: true },
+      { nombre_campo: 'CRetPPrioridad', tipo_campo: 'smallint', obligatorio: true },
+      { nombre_campo: 'CRetPPenAlimenticia', tipo_campo: 'smallint', obligatorio: false },
+      { nombre_campo: 'CRetPConPlazos', tipo_campo: 'smallint', obligatorio: false },
     ],
   },
   {
     nombre: 'Maestro Retenciones',
     tabla_sql: 'SNOMANTPENS',
     campos: [
-      { campo: 'MantPensCiPens', tipo: 'varchar', obligatorio: true },
-      { campo: 'MantPensNombre+ MantPensPriApe + MantPensSeg', tipo: 'varchar', obligatorio: true },
-      { campo: 'ClcuIDCuenta', tipo: 'smallint', obligatorio: true },
-      { campo: 'CRetPPrioridad', tipo: 'smallint', obligatorio: true },
-      { campo: 'CRetPPenAlimenticia', tipo: 'smallint', obligatorio: false },
-      { campo: 'CRetPConPlazos', tipo: 'smallint', obligatorio: false },
+      { nombre_campo: 'MantPensCiPens', tipo_campo: 'varchar', obligatorio: false },
+      {
+        nombre_campo: 'MantPensNombre+ MantPensPriApe + MantPensSeg',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+      },
+      { nombre_campo: 'MantPensDir', tipo_campo: 'varchar', obligatorio: true },
+      { nombre_campo: 'MantPensFormPag', tipo_campo: 'char', obligatorio: false },
+      { nombre_campo: 'MantPensTMagn', tipo_campo: 'char', obligatorio: false },
     ],
   },
-  { nombre: 'Tasas de Destajo', tabla_sql: 'SNONOMENCLADORTASADESTAJO', campos: [] },
-  { nombre: 'Colectivos', tabla_sql: 'SNONOMENCLADORCOLECTIVOS', campos: [] },
-  { nombre: 'Submayor Vacaciones', tabla_sql: 'SNOSMVACACIONES', campos: [] },
-  { nombre: 'Pensionados', tabla_sql: 'SCPMAESTRORETENCION', campos: [] },
+  {
+    nombre: 'Tasas de Destajo',
+    tabla_sql: 'SNONOMENCLADORTASADESTAJO',
+    campos: [
+      { nombre_campo: 'TasaDDescripcion', tipo_campo: 'varchar', obligatorio: true },
+      { nombre_campo: 'TasaDTasa', tipo_campo: 'decimal', obligatorio: false },
+    ],
+  },
+  {
+    nombre: 'Colectivos',
+    tabla_sql: 'SNONOMENCLADORCOLECTIVOS',
+    campos: [{ nombre_campo: 'ColecDescripcion', tipo_campo: 'char', obligatorio: true }],
+  },
+  // { nombre: 'Submayor Vacaciones', tabla_sql: 'SNOSMVACACIONES', campos: [] },
+  // { nombre: 'Pensionados', tabla_sql: 'SCPMAESTRORETENCION', campos: [] },
   // { nombre: 'Submayor Salarios No reclamados', tabla_sql: 'SNOSMREINTEGRONR', campos: [] },
   // { nombre: 'SC-4-08', tabla_sql: 'SNOSMREINTEGRONR', campos: [] },
 ]
@@ -195,8 +216,8 @@ const pagination = {
 async function verRelacion(tabla: Tabla) {
   console.log('Ver relación de:', tabla.nombre, 'y la tabla_sql: ', tabla.tabla_sql)
 
-  // Verificando el tipo de dato de tabla.tabla_sql
-  console.log('Tipo de tabla_sql: ', typeof tabla.tabla_sql)
+  // Verificando el tipo_campo de dato de tabla.tabla_sql
+  console.log('tipo_campo de tabla_sql: ', typeof tabla.tabla_sql)
 
   if (typeof tabla.tabla_sql !== 'string') {
     console.error('tabla.tabla_sql no es un string.')
@@ -270,6 +291,21 @@ function importarDatos(tabla: Tabla) {
   console.log('Importar datos de:', tabla.nombre)
   // Lógica para importar datos
 }
+
+// Calcular dinámicamente el tamaño del diálogo
+const dialogStyles = computed(() => {
+  const baseWidth = 600
+  const baseHeight = 400
+  const numRelaciones = relaciones.value.length
+
+  const width = Math.min(1200, baseWidth + numRelaciones * 50) // Ajusta el factor multiplicativo según sea necesario
+  const height = Math.min(800, baseHeight + numRelaciones * 40) // Ajusta el factor multiplicativo según sea necesario
+
+  return {
+    width: `${width}px`,
+    height: `${height}px`,
+  }
+})
 </script>
 
 <style>
