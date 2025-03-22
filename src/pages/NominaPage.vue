@@ -74,6 +74,7 @@ const mostrarDialogo = ref(false)
 interface Tabla {
   nombre: string
   tabla_sql: string
+  campos: Campo[]
 }
 
 // Definiendo la interfaz para la Relacion entre las tablas
@@ -86,18 +87,80 @@ interface Relacion {
 
 // Definiendo las tablas que se relacionan con NOMINA en Siscont
 const tablas: Tabla[] = [
-  { nombre: 'Trabajadores', tabla_sql: 'SCPTRABAJADORES' },
-  { nombre: 'Categorias Ocupacional', tabla_sql: 'SNOCATEGOCUP' },
-  { nombre: 'Cargos', tabla_sql: 'SNOCARGOS' },
-  { nombre: 'Tipo Trabajador', tabla_sql: 'SNOTIPOTRABAJADOR' },
-  { nombre: 'Tipo Retenciones', tabla_sql: 'SCPCONRETPAGAR' },
-  { nombre: 'Maestro Retenciones', tabla_sql: 'SCPMAESTRORETENCION' },
-  { nombre: 'Pensionados', tabla_sql: 'SNOMANTPENS' },
-  { nombre: 'Tasas de Destajo', tabla_sql: 'SNONOMENCLADORTASADESTAJO' },
-  { nombre: 'Colectivos', tabla_sql: 'SNONOMENCLADORCOLECTIVOS' },
-  { nombre: 'Submayor Vacaciones', tabla_sql: 'SNOSMVACACIONES' },
-  { nombre: 'Submayor Salarios No reclamados', tabla_sql: 'SNOSMREINTEGRONR' },
-  { nombre: 'SC-4-08', tabla_sql: 'SNOSMREINTEGRONR' },
+  {
+    nombre: 'Trabajadores',
+    tabla_sql: 'SCPTRABAJADORES',
+    campos: [
+      { campo: 'CPTrabConsecutivoID', tipo: 'varchar', obligatorio: true },
+      { campo: 'CPTrabNombre', tipo: 'varchar', obligatorio: true },
+      { campo: 'CPTrabPriApellido', tipo: 'varchar', obligatorio: true },
+      { campo: 'CPTrabSegApellido', tipo: 'varchar', obligatorio: true },
+      { campo: 'TrabSexo', tipo: 'char', obligatorio: true },
+      { campo: 'CategId', tipo: 'int', obligatorio: false },
+      { campo: 'CargId', tipo: 'int', obligatorio: false },
+      { campo: 'TrabFechaAlta', tipo: 'datetime', obligatorio: true },
+      { campo: 'TrabFechaBaja', tipo: 'datetime', obligatorio: false },
+      { campo: 'TrabFormaCobro', tipo: 'char', obligatorio: false },
+      { campo: 'TrabTmagnMN', tipo: 'char', obligatorio: false },
+      { campo: 'TrabCorreo', tipo: 'varchar', obligatorio: false },
+      { campo: 'TrabCPVacaciones', tipo: 'smallint', obligatorio: false },
+    ],
+  },
+  {
+    nombre: 'Categorias Ocupacional',
+    tabla_sql: 'SNOCATEGOCUP',
+    campos: [{ campo: 'CategODescripcion', tipo: 'varchar', obligatorio: true }],
+  },
+  {
+    nombre: 'Cargos',
+    tabla_sql: 'SNOCARGOS',
+    campos: [{ campo: 'CargDescripcion', tipo: 'varchar', obligatorio: true }],
+  },
+  {
+    nombre: 'Tipo Trabajador',
+    tabla_sql: 'SNOTIPOTRABAJADOR',
+    campos: [{ campo: 'TipTrabDescripcion', tipo: 'varchar', obligatorio: true }],
+  },
+  {
+    nombre: 'Tipo Retenciones',
+    tabla_sql: 'SCPCONRETPAGAR',
+    campos: [
+      { campo: 'CPCRetDescripcion', tipo: 'varchar', obligatorio: true },
+      { campo: 'CRetDeudaCon', tipo: 'decimal', obligatorio: true },
+      { campo: 'ClcuIDCuenta', tipo: 'smallint', obligatorio: true },
+      { campo: 'CRetPPrioridad', tipo: 'smallint', obligatorio: true },
+      { campo: 'CRetPPenAlimenticia', tipo: 'smallint', obligatorio: false },
+      { campo: 'CRetPConPlazos', tipo: 'smallint', obligatorio: false },
+    ],
+  },
+  {
+    nombre: 'Maestro Retenciones',
+    tabla_sql: 'SNOMANTPENS',
+    campos: [
+      { campo: 'MantPensCiPens', tipo: 'varchar', obligatorio: false },
+      { campo: 'MantPensNombre+ MantPensPriApe + MantPensSeg', tipo: 'varchar', obligatorio: true },
+      { campo: 'MantPensDir', tipo: 'varchar', obligatorio: true },
+      { campo: 'MantPensFormPag', tipo: 'char', obligatorio: false },
+      { campo: 'MantPensTMagn', tipo: 'char', obligatorio: false },
+    ],
+  },
+  {
+    nombre: 'Tasas de Destajo',
+    tabla_sql: 'SNONOMENCLADORTASADESTAJO',
+    campos: [
+      { campo: 'TasaDDescripcion', tipo: 'varchar', obligatorio: true },
+      { campo: 'TasaDTasa', tipo: 'decimal', obligatorio: false },
+    ],
+  },
+  {
+    nombre: 'Colectivos',
+    tabla_sql: 'SNONOMENCLADORCOLECTIVOS',
+    campos: [{ campo: 'ColecDescripcion', tipo: 'char', obligatorio: true }],
+  },
+  // { nombre: 'Submayor Vacaciones', tabla_sql: 'SNOSMVACACIONES', campos: [] },
+  // { nombre: 'Pensionados', tabla_sql: 'SCPMAESTRORETENCION', campos: [] },
+  // { nombre: 'Submayor Salarios No reclamados', tabla_sql: 'SNOSMREINTEGRONR', campos: [] },
+  // { nombre: 'SC-4-08', tabla_sql: 'SNOSMREINTEGRONR', campos: [] },
 ]
 
 // Definiendo las columnas
