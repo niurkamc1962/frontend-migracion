@@ -17,7 +17,7 @@
             @click="verRelacion(props.row)"
             class="q-mr-sm"
           />
-          <q-btn color="secondary" label="Importar Datos" @click="importarDatos(props.row)" />
+          <q-btn color="secondary" label="Generar JSON" @click="generarJSON(props.row)" />
         </q-td>
       </template>
     </q-table>
@@ -287,9 +287,48 @@ async function verRelacion(tabla: Tabla) {
   }
 }
 
-function importarDatos(tabla: Tabla) {
+async function generarJSON(tabla: Tabla) {
   console.log('Importar datos de:', tabla.nombre)
-  // Lógica para importar datos
+  const fields = tabla.campos.map((campo) => ({
+    nombre_campo: campo.nombre_campo,
+    tipo_campo: campo.tipo_campo,
+    obligatorio: campo.obligatorio,
+  }))
+
+  const params = {
+    host: ipStore.ip_server,
+    database: ipStore.db_name,
+    password: ipStore.db_password,
+  }
+
+  const url_api = `${process.env.VUE_APP_API_BASE_URL}/table-data/${tabla.tabla_sql}`
+
+  // Contruyendo el objeto JSON manualmente
+  const payload = {
+    params: params,
+    fields: fields,
+  }
+
+  // Haciendo la solicitud segun la API
+  console.log('URL: ', url_api)
+  console.log('payload: ', payload)
+
+  try {
+    const response = await axios.post(url_api, payload)
+    console.log('Datos importados correctamente:', response.data)
+
+    $q.notify({
+      type: 'positive',
+      message: `Datos de ${tabla.nombre} importados exitosamente.`,
+    })
+  } catch (error) {
+    console.error('Error al importar datos:', error)
+
+    $q.notify({
+      type: 'negative',
+      message: `Error al importar datos de ${tabla.nombre}.`,
+    })
+  }
 }
 
 // Calcular dinámicamente el tamaño del diálogo
