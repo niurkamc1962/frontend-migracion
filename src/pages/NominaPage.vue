@@ -124,12 +124,12 @@ const tablas: Tabla[] = [
     campos: [{ nombre_campo: 'CargDescripcion', tipo_campo: 'varchar', obligatorio: true }],
   },
   {
-    nombre: 'tipo_campo Trabajador',
-    tabla_sql: 'SNOtipo_campoTRABAJADOR',
+    nombre: 'Tipo Trabajador',
+    tabla_sql: 'SNOTIPOTRABAJADOR',
     campos: [{ nombre_campo: 'TipTrabDescripcion', tipo_campo: 'varchar', obligatorio: true }],
   },
   {
-    nombre: 'tipo_campo Retenciones',
+    nombre: 'Tipo Retenciones',
     tabla_sql: 'SCPCONRETPAGAR',
     campos: [
       { nombre_campo: 'CPCRetDescripcion', tipo_campo: 'varchar', obligatorio: true },
@@ -141,7 +141,7 @@ const tablas: Tabla[] = [
     ],
   },
   {
-    nombre: 'Maestro Retenciones',
+    nombre: 'Pensionadas',
     tabla_sql: 'SNOMANTPENS',
     campos: [
       { nombre_campo: 'MantPensCiPens', tipo_campo: 'varchar', obligatorio: false },
