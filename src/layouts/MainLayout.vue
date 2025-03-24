@@ -130,11 +130,6 @@ export default defineComponent({
         message: 'Autenticando con el servidor de BD ...',
       })
       try {
-        // Actualizando los valores en el store
-        ipStore.setIpServer(ip_server.value)
-        ipStore.setDbName(db_name.value)
-        ipStore.setDbPassword(db_password.value)
-
         const params = {
           host: ip_server.value,
           database: db_name.value,
@@ -147,7 +142,10 @@ export default defineComponent({
         $q.loading.hide()
 
         if (respuesta.data.status === 'success') {
+          // Actualizando los valores en el store solo si es exitosa
           ipStore.setIpServer(ip_server.value)
+          ipStore.setDbName(db_name.value)
+          ipStore.setDbPassword(db_password.value)
           // Redireccionando segun la opcion seleccionada
           if (ipStore.selectedOption) {
             console.log('ipstore: ', ipStore)
