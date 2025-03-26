@@ -3,9 +3,7 @@
     <q-header reveal bordered class="text-white bg-primary" height-hint="98">
       <q-toolbar>
         <q-toolbar-title class="text-h6"> Siscont - ERPNext </q-toolbar-title>
-
         <q-space />
-
         <div v-if="ipStore.ip_server">
           <div class="q-pa-md">
             <div class="q-gutter-md row items-start">
@@ -26,58 +24,79 @@
     </q-header>
 
     <q-page-container>
-      <div class="items-start q-pa-md row q-gutter-md">
-        <q-card v-if="!ipStore.ip_server" flat bordered class="my-card">
+      <!-- Contenedor para el formulario centrado -->
+      <div v-if="!ipStore.ip_server" class="row justify-center q-pt-xl">
+        <q-card flat bordered class="form-card">
           <q-card-section>
-            <div class="items-center row no-wrap">
-              <div class="col">
-                <div class="text-h6">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ea, rerum
-                  debitis voluptate eius voluptatibus cumque iure explicabo nam obcaecati libero
-                  repudiandae enim ullam, consectetur illum laudantium nemo facere voluptates!
-                </div>
-              </div>
-            </div>
+            <div class="text-h6 text-center q-mb-md">Configuración de conexión al servidor</div>
+            <q-separator class="q-mb-md" />
+            <q-form @submit.prevent="enviarIPServer">
+              <q-input
+                name="ip"
+                placeholder="xxx.xxx.xxx.xxx"
+                v-model="ip_server"
+                label="IP SQLServer"
+                :rules="[(val) => !!val || 'La ip es requerida']"
+                class="col-4"
+              />
+              <q-input
+                name="dbname"
+                placeholder="Nombre de la base de datos"
+                v-model="db_name"
+                label="Nombre DB"
+                :rules="[(val) => !!val || 'El nombre de la base de datos es requerido']"
+                class="col-4"
+              />
+              <q-input
+                name="password"
+                placeholder="Contraseña"
+                v-model="db_password"
+                label="Contraseña"
+                type="password"
+                :rules="[(val) => !!val || 'La contraseña es requerida']"
+                class="col-4"
+              />
+              <q-btn type="submit" color="primary" class="col-4">Enviar</q-btn>
+            </q-form>
           </q-card-section>
-          <q-card-section class="items-center row no-wrap">
-            <div class="row q-gutter-md">
-              Especifique los datos del servidor:
-              <q-form @submit.prevent="enviarIPServer">
-                <q-input
-                  name="ip"
-                  placeholder="xxx.xxx.xxx.xxx"
-                  v-model="ip_server"
-                  label="IP SQLServer"
-                  :rules="[(val) => !!val || 'La ip es requerida']"
-                  class="col-4"
-                />
-                <q-input
-                  name="dbname"
-                  placeholder="Nombre de la base de datos"
-                  v-model="db_name"
-                  label="Nombre DB"
-                  :rules="[(val) => !!val || 'El nombre de la base de datos es requerido']"
-                  class="col-4"
-                />
-                <q-input
-                  name="password"
-                  placeholder="Contraseña"
-                  v-model="db_password"
-                  label="Contraseña"
-                  type="password"
-                  :rules="[(val) => !!val || 'La contraseña es requerida']"
-                  class="col-4"
-                />
-                <q-btn type="submit" color="primary" class="col-4">Enviar</q-btn>
-              </q-form>
+        </q-card>
+      </div>
+
+      <!--  Contenedor para la vista de módulos -->
+      <div v-if="ipStore.ip_server && $route.name === 'index'" class="full-width q-pa-xl">
+        <q-card flat bordered class="my-card">
+          <q-img src="/siscont-2018.jpg" class="card-image" alt="Siscont" />
+          <q-card-section class="card-content">
+            <div class="text-h4 text-primary q-mb-md">Siscont - ERPNext</div>
+            <div class="text-body1">
+              Sistema integral de gestión empresarial que incluye:
+              <ul class="q-mt-sm">
+                <li>Módulo de Administración</li>
+                <li>Módulo General</li>
+                <li>Contabilidad General</li>
+                <li>Contabilidad de Costo (incluye consolidación)</li>
+                <li>Estados Financieros (incluye consolidación)</li>
+                <li>Activos fijos</li>
+                <li>Cobros y pagos</li>
+                <li>Inventarios y Útiles y herramientas.</li>
+                <li>Control de Almacén (escenarios internos y externos)</li>
+                <li>Nómina y Cálculo de Sistemas de Pagos</li>
+                <li>Gestión Comercial. Ventas de Productos y Servicios. (Plataforma WEB)</li>
+                <li>Gestión Comercial. Compras. (Plataforma WEB)</li>
+                <li>Gestión de Inversiones (Plataforma WEB)</li>
+                <li>Módulo Gerencial (Plataforma WEB)</li>
+                <li>Módulo Presupuesto (Plataforma WEB)</li>
+                <li>Herramienta de Consolidación de inventarios (Plataforma WEB)</li>
+              </ul>
+            </div>
+            <!-- Version fuera del flex principal -->
+            <div class="text-caption version-text">
+              Versión 2.1 - Desarrollado por Tecnomática © {{ currentYear }}
             </div>
           </q-card-section>
         </q-card>
       </div>
 
-      <!-- <div v-if="ipStore.selectedOption" class="text-h6 q-mt-md">
-        Opcion seleccionada: {{ ipStore.selectedOption }}
-      </div> -->
       <router-view />
     </q-page-container>
 
@@ -210,10 +229,43 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
+// Estilo para el formulario centrado
+.form-card
+  width: 100%
+  max-width: 500px
+  padding: 20px
+  margin: 20px
+
+// Estilo para la vista de módulos
+.full-width
+  width: 100%
+
 .my-card
-  width: 90%
-  max-width: 800px
-  margin:40px auto  // aumenta el margen superior e inferior y centra horizontal
+  width: 100%
+  margin: 40px 0
   min-height: 300px
-  padding: 20px  // Anade pagging interno para mas espacio
+  padding: 20px
+  display: flex
+  gap: 20px
+  @media (max-width: 768px)
+    flex-direction: column
+
+.card-image
+  flex: 0 0 40%
+  max-height: 300px
+  object-fit: contain
+
+.card-content
+  flex: 1
+
+.version-text
+  width: 100%
+  margin-top: 20px
+
+// Estilos adicionales para mejorar el formulario
+.q-form
+  min-width: 300px
+
+.text-h6
+  font-weight: 600
 </style>
