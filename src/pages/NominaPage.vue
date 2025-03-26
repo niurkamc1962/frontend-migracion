@@ -75,6 +75,7 @@ interface Tabla {
   nombre: string
   tabla_sql: string
   campos: Campo[]
+  nombre_doctype: string
 }
 
 // Definiendo interfaz para Campo
@@ -82,6 +83,8 @@ interface Campo {
   nombre_campo: string
   tipo_campo: string
   obligatorio: boolean
+  nombre_campo_erp: string
+  tipo_campo_erp: string
 }
 
 // Definiendo la interfaz para la Relacion entre las tablas
@@ -96,77 +99,283 @@ interface Relacion {
 const tablas: Tabla[] = [
   {
     nombre: 'Trabajadores',
+    nombre_doctype: 'employees',
     tabla_sql: 'SCPTRABAJADORES',
     campos: [
-      { nombre_campo: 'CPTrabConsecutivoID', tipo_campo: 'varchar', obligatorio: true },
-      { nombre_campo: 'CPTrabNombre', tipo_campo: 'varchar', obligatorio: true },
-      { nombre_campo: 'CPTrabPriApellido', tipo_campo: 'varchar', obligatorio: true },
-      { nombre_campo: 'CPTrabSegApellido', tipo_campo: 'varchar', obligatorio: true },
-      { nombre_campo: 'TrabSexo', tipo_campo: 'char', obligatorio: true },
-      { nombre_campo: 'CategId', tipo_campo: 'int', obligatorio: false },
-      { nombre_campo: 'CargId', tipo_campo: 'int', obligatorio: false },
-      { nombre_campo: 'TrabFechaAlta', tipo_campo: 'datetime', obligatorio: true },
-      { nombre_campo: 'TrabFechaBaja', tipo_campo: 'datetime', obligatorio: false },
-      { nombre_campo: 'TrabFormaCobro', tipo_campo: 'char', obligatorio: false },
-      { nombre_campo: 'TrabTmagnMN', tipo_campo: 'char', obligatorio: false },
-      { nombre_campo: 'TrabCorreo', tipo_campo: 'varchar', obligatorio: false },
-      { nombre_campo: 'TrabCPVacaciones', tipo_campo: 'smallint', obligatorio: false },
+      {
+        nombre_campo: 'CPTrabConsecutivoID',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: 'entity_number',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CPTrabNombre',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: 'first_name',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CPTrabPriApellido',
+        tipo_campo: 'last_name',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CPTrabSegApellido',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TrabSexo',
+        tipo_campo: 'char',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CategId',
+        tipo_campo: 'int',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CargId',
+        tipo_campo: 'int',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TrabFechaAlta',
+        tipo_campo: 'datetime',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TrabFechaBaja',
+        tipo_campo: 'datetime',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TrabFormaCobro',
+        tipo_campo: 'char',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TrabTmagnMN',
+        tipo_campo: 'char',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TrabCorreo',
+        tipo_campo: 'varchar',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TrabCPVacaciones',
+        tipo_campo: 'smallint',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
     ],
   },
   {
     nombre: 'Categorias Ocupacional',
     tabla_sql: 'SNOCATEGOCUP',
-    campos: [{ nombre_campo: 'CategODescripcion', tipo_campo: 'varchar', obligatorio: true }],
+    nombre_doctype: '',
+    campos: [
+      {
+        nombre_campo: 'CategODescripcion',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+    ],
   },
   {
     nombre: 'Cargos',
     tabla_sql: 'SNOCARGOS',
-    campos: [{ nombre_campo: 'CargDescripcion', tipo_campo: 'varchar', obligatorio: true }],
+    nombre_doctype: '',
+    campos: [
+      {
+        nombre_campo: 'CargDescripcion',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+    ],
   },
   {
     nombre: 'Tipo Trabajador',
     tabla_sql: 'SNOTIPOTRABAJADOR',
-    campos: [{ nombre_campo: 'TipTrabDescripcion', tipo_campo: 'varchar', obligatorio: true }],
+    nombre_doctype: '',
+    campos: [
+      {
+        nombre_campo: 'TipTrabDescripcion',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+    ],
   },
   {
     nombre: 'Tipo Retenciones',
     tabla_sql: 'SCPCONRETPAGAR',
+    nombre_doctype: '',
     campos: [
-      { nombre_campo: 'CPCRetDescripcion', tipo_campo: 'varchar', obligatorio: true },
-      { nombre_campo: 'CRetDeudaCon', tipo_campo: 'decimal', obligatorio: true },
-      { nombre_campo: 'ClcuIDCuenta', tipo_campo: 'smallint', obligatorio: true },
-      { nombre_campo: 'CRetPPrioridad', tipo_campo: 'smallint', obligatorio: true },
-      { nombre_campo: 'CRetPPenAlimenticia', tipo_campo: 'smallint', obligatorio: false },
-      { nombre_campo: 'CRetPConPlazos', tipo_campo: 'smallint', obligatorio: false },
+      {
+        nombre_campo: 'CPCRetDescripcion',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CRetDeudaCon',
+        tipo_campo: 'decimal',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'ClcuIDCuenta',
+        tipo_campo: 'smallint',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CRetPPrioridad',
+        tipo_campo: 'smallint',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CRetPPenAlimenticia',
+        tipo_campo: 'smallint',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'CRetPConPlazos',
+        tipo_campo: 'smallint',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
     ],
   },
   {
     nombre: 'Pensionadas',
     tabla_sql: 'SNOMANTPENS',
+    nombre_doctype: '',
     campos: [
-      { nombre_campo: 'MantPensCiPens', tipo_campo: 'varchar', obligatorio: false },
       {
-        nombre_campo: 'MantPensNombre+ MantPensPriApe + MantPensSeg',
+        nombre_campo: 'MantPensCiPens',
+        tipo_campo: 'varchar',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'MantPensNombre',
+        tipo_campo: 'varchar',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'MantPensPriApe',
+        tipo_campo: 'varchar',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'MantPensSegApe',
+        tipo_campo: 'varchar',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'MantPensDir',
         tipo_campo: 'varchar',
         obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
       },
-      { nombre_campo: 'MantPensDir', tipo_campo: 'varchar', obligatorio: true },
-      { nombre_campo: 'MantPensFormPag', tipo_campo: 'char', obligatorio: false },
-      { nombre_campo: 'MantPensTMagn', tipo_campo: 'char', obligatorio: false },
+      {
+        nombre_campo: 'MantPensFormPag',
+        tipo_campo: 'char',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'MantPensTMagn',
+        tipo_campo: 'char',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
     ],
   },
   {
     nombre: 'Tasas de Destajo',
-    tabla_sql: 'SNONOMENCLADORTASADESTAJO',
+    tabla_sql: 'SNONOMENCLADORTASASDESTAJO',
+    nombre_doctype: '',
     campos: [
-      { nombre_campo: 'TasaDDescripcion', tipo_campo: 'varchar', obligatorio: true },
-      { nombre_campo: 'TasaDTasa', tipo_campo: 'decimal', obligatorio: false },
+      {
+        nombre_campo: 'TasaDDescripcion',
+        tipo_campo: 'varchar',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+      {
+        nombre_campo: 'TasaDTasa',
+        tipo_campo: 'decimal',
+        obligatorio: false,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
     ],
   },
   {
     nombre: 'Colectivos',
     tabla_sql: 'SNONOMENCLADORCOLECTIVOS',
-    campos: [{ nombre_campo: 'ColecDescripcion', tipo_campo: 'char', obligatorio: true }],
+    nombre_doctype: '',
+    campos: [
+      {
+        nombre_campo: 'ColecDescripcion',
+        tipo_campo: 'char',
+        obligatorio: true,
+        nombre_campo_erp: '',
+        tipo_campo_erp: '',
+      },
+    ],
   },
   // { nombre: 'Submayor Vacaciones', tabla_sql: 'SNOSMVACACIONES', campos: [] },
   // { nombre: 'Pensionados', tabla_sql: 'SCPMAESTRORETENCION', campos: [] },
@@ -293,6 +502,8 @@ async function generarJSON(tabla: Tabla) {
     nombre_campo: campo.nombre_campo,
     tipo_campo: campo.tipo_campo,
     obligatorio: campo.obligatorio,
+    nombre_campo_erp: campo.nombre_campo_erp,
+    tipo_campo_erp: campo.tipo_campo_erp,
   }))
 
   const params = {
