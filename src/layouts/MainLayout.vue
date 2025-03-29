@@ -144,7 +144,7 @@ export default defineComponent({
     ])
 
     const enviarIPServer = async () => {
-      // mostrando loading mientras se realiza la conexion con el servidor de BD
+      // Mostrando loading mientras se realiza la conexión con el servidor de BD
       $q.loading.show({
         message: 'Autenticando con el servidor de BD ...',
       })
@@ -157,39 +157,40 @@ export default defineComponent({
         const url_api = `${process.env.VUE_APP_API_BASE_URL}/conectar-params`
         const respuesta = await axios.post(url_api, params)
 
-        // Ocultando el loading antes de pasar al notify
+        // Ocultando el loading antes de mostrar notificaciones
         $q.loading.hide()
 
-        if (respuesta.data.status === 'success') {
+        // Validar si la respuesta contiene datos (indicador de éxito)
+        if (respuesta.data && respuesta.data.table_count > 0) {
           // Actualizando los valores en el store solo si es exitosa
           ipStore.setIpServer(ip_server.value)
           ipStore.setDbName(db_name.value)
           ipStore.setDbPassword(db_password.value)
-          // Redireccionando segun la opcion seleccionada
+
+          // Redireccionando según la opción seleccionada
           if (ipStore.selectedOption) {
-            console.log('ipstore: ', ipStore)
             const routeName = ipStore.selectedOption
-            if (routeName != 'index') {
+            if (routeName !== 'index') {
               await router.push({ name: routeName })
             } else {
-              // si la opcion es salir entonces redirecciona a index
+              // Si la opción es salir entonces redirecciona a index
               ipStore.resetIpServer()
               await router.push({ name: 'index' })
             }
           }
-          $q.notify({ color: 'positive', message: 'Conexion exitosa' })
+          $q.notify({ color: 'positive', message: 'Conexión exitosa' })
         } else {
           $q.notify({
             color: 'negative',
-            message: respuesta.data.message || 'Ocurrio error al conectar con el servidor de BD',
+            message: 'No se encontraron tablas en la base de datos o conexión fallida.',
           })
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
         $q.loading.hide()
         $q.notify({
           color: 'negative',
-          message: 'Ocurrio error al intentar conectar con el servidor',
+          message: 'Ocurrió un error al intentar conectar con el servidor.',
         })
       }
     }
