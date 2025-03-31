@@ -17,7 +17,13 @@
             @click="verRelacion(props.row)"
             class="q-mr-sm"
           />
-          <q-btn color="secondary" label="Generar JSON" @click="generarJSON(props.row)" />
+          <q-btn
+            color="secondary"
+            label="Generar JSON"
+            @click="generarJSON(props.row)"
+            class="q-mr-sm"
+          />
+          <q-btn color="secondary" label="Generar Doctype" @click="generarDoctypeJSON(props.row)" />
         </q-td>
       </template>
     </q-table>
@@ -538,6 +544,52 @@ async function generarJSON(tabla: Tabla) {
     $q.notify({
       type: 'negative',
       message: `Error al importar datos de ${tabla.nombre}.`,
+    })
+  }
+}
+
+async function generarDoctypeJSON(tabla: Tabla) {
+  const fields = tabla.campos.map((campo) => ({
+    nombre_campo: campo.nombre_campo,
+    tipo_campo: campo.tipo_campo,
+    obligatorio: campo.obligatorio,
+    nombre_campo_erp: campo.nombre_campo_erp,
+    tipo_campo_erp: campo.tipo_campo_erp,
+  }))
+
+  const params = {
+    host: ipStore.ip_server,
+    database: ipStore.db_name,
+    password: ipStore.db_password,
+  }
+
+  const url_api = `${process.env.VUE_APP_API_BASE_URL}/generate-doctype-json/${tabla.tabla_sql}`
+
+  const payload = {
+    params: params,
+    fields: fields,
+    module: 'Nomina',
+    is_child_table: false,
+  }
+
+  // Haciendo la solicitud segun la API
+  console.log('URL: ', url_api)
+  console.log('payload: ', payload)
+
+  try {
+    const response = await axios.post(url_api, payload)
+    console.log('Creado el doctype: ', response.data)
+
+    $q.notify({
+      type: 'positive',
+      message: `Creado el doctype de la tabla sql ${tabla.nombre} exitosamente.`,
+    })
+  } catch (error) {
+    console.error('Error al crear el doctype en formato JSON:', error)
+
+    $q.notify({
+      type: 'negative',
+      message: `Error al crear el formato JSON del doctype de ${tabla.nombre}.`,
     })
   }
 }
